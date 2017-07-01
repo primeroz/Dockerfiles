@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [[ -z "${TESTNET}" ]]; then
+if [ -z "${TESTNET}" ]; then
 
 	# Bootstrap from blockchain.raw
 	cd /monero
