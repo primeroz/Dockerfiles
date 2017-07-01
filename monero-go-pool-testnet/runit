@@ -4,3 +4,5 @@ docker volume create --name redis-testnet
 
 docker run --rm -t -i -v monerod-testnet:/monero -v pool-testnet:/pool -v redis-testnet:/redis -p 28080:28080 -p 8082:8082 primeroz/monero-go-pool-testnet /sbin/my_init -- bash -l
 
+docker run -d -t -i -v monerod-testnet:/monero -v pool-testnet:/pool -v redis-testnet:/redis -v /home/prz/tmp/config-go-pool.json:/usr/local/src/pool/config.json -p 1111:1111 -p 28080:28080 -p 8082:8082 -e LOG_LEVEL=0 primeroz/monero-go-pool-testnet
+

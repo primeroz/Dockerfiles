@@ -46,6 +46,7 @@ RUN set -ex && cd monero-stratum \
 
 RUN set -ex && mkdir -p $SRC_DIR/pool $SRC_DIR/pool/lib \
 						&& cp -a $SRC_DIR/monero-stratum/pool $SRC_DIR/pool/ \
+						&& cp -a $SRC_DIR/monero-stratum/www $SRC_DIR/pool/ \
 						&& find $SRC_DIR/monero-stratum/ -type f -name "*.so" -exec cp {} $SRC_DIR/pool/lib/ \;
 
 RUN set -ex && rm -rf $SRC_DIR/monero-src \
