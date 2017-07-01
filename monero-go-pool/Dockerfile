@@ -39,7 +39,7 @@ RUN set -ex && cd monero-stratum \
 						&& go get github.com/goji/httpauth \
 						&& go get github.com/yvasiyarov/gorelic \
 						&& go get github.com/gorilla/mux \
-						&& MONERO_DIR=/usr/local/src/monero-src cmake . \
+						&& MONERO_DIR=$SRC_DIR/monero-src cmake . \
 						&& make \
 						&& go build -o pool main.go
 #go build --ldflags '-extldflags "-static"' -o pool main.go 
@@ -52,6 +52,8 @@ RUN set -ex && rm -rf $SRC_DIR/monero-src \
 						&& rm -rf $SRC_DIR/go
 
 RUN set -ex && strip $SRC_DIR/monero/bin/* $SRC_DIR/monero/lib/* $SRC_DIR/pool/*
+
+RUN set -ex  && apt-get -qq --no-install-recommends install redis-server
 
 RUN echo "/usr/local/src/monero/lib" > /etc/ld.so.conf.d/monero.conf && ldconfig
 
@@ -71,7 +73,7 @@ EXPOSE 18080
 
 VOLUME /redis
 VOLUME /pool
-VOLUME /monerod
+VOLUME /monero
 
 
 RUN mkdir /etc/service/redis

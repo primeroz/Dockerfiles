@@ -1,7 +1,7 @@
 #!/bin/sh
+exit 0
 
-
-if [[ -z ${TESTNET+x} ]]; then
+if [[ -z "${TESTNET}" ]]; then
 
 	# Bootstrap from blockchain.raw
 	cd /monero
@@ -12,8 +12,8 @@ if [[ -z ${TESTNET+x} ]]; then
 	fi
 
 
-	exec /sbin/setuser root /usr/local/src/monero/bin/monerod --data-dir /monero --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC  2>&1
+	exec /sbin/setuser root /usr/local/src/monero/bin/monerod --data-dir /monero --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC_BIND_PORT  2>&1
 else
-	exec /sbin/setuser root /usr/local/src/monero/bin/monerod --testnet-data-dir /monero --testnet --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC  2>&1
+	exec /sbin/setuser root /usr/local/src/monero/bin/monerod --testnet-data-dir /monero --testnet --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC_BIND_PORT  2>&1
 fi
 
