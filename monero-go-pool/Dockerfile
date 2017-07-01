@@ -52,7 +52,7 @@ RUN set -ex && rm -rf $SRC_DIR/monero-src \
 						&& rm -rf $SRC_DIR/monero-stratum \
 						&& rm -rf $SRC_DIR/go
 
-RUN set -ex && strip $SRC_DIR/monero/bin/* $SRC_DIR/monero/lib/* $SRC_DIR/pool/*
+RUN set -ex && strip $SRC_DIR/monero/bin/* $SRC_DIR/monero/lib/* $SRC_DIR/pool/pool
 
 RUN set -ex  && apt-get -qq --no-install-recommends install redis-server
 
