@@ -39,7 +39,7 @@ RUN set -ex && cd monero-stratum \
 						&& go get github.com/goji/httpauth \
 						&& go get github.com/yvasiyarov/gorelic \
 						&& go get github.com/gorilla/mux \
-						&& cmake . \
+						&& MONERO_DIR=/usr/local/src/monero-src cmake . \
 						&& make \
 						&& go build -o pool main.go
 #go build --ldflags '-extldflags "-static"' -o pool main.go 
