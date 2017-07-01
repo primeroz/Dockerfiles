@@ -44,8 +44,9 @@ RUN set -ex && cd monero-stratum \
 						&& go build -o pool main.go
 #go build --ldflags '-extldflags "-static"' -o pool main.go 
 
-RUN set -ex && mkdir -p $SRC_DIR/pool \
+RUN set -ex && mkdir -p $SRC_DIR/pool $SRC_DIR/pool/lib \
 						&& cp -a $SRC_DIR/monero-stratum/pool $SRC_DIR/pool/
+						&& find $SRC_DIR/monero-stratum/ -type f -name "*.so" -exec cp {} $SRC_DIR/pool/lib/ \;
 
 RUN set -ex && rm -rf $SRC_DIR/monero-src \
 						&& rm -rf $SRC_DIR/monero-stratum \
@@ -56,6 +57,7 @@ RUN set -ex && strip $SRC_DIR/monero/bin/* $SRC_DIR/monero/lib/* $SRC_DIR/pool/*
 RUN set -ex  && apt-get -qq --no-install-recommends install redis-server
 
 RUN echo "/usr/local/src/monero/lib" > /etc/ld.so.conf.d/monero.conf && ldconfig
+RUN echo "/usr/local/src/pool/lib" > /etc/ld.so.conf.d/monero.conf && ldconfig
 
 ENV LOG_LEVEL 0
 ENV P2P_BIND_IP 0.0.0.0
