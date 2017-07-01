@@ -1,5 +1,4 @@
 #!/bin/sh
-exit 0
 
 if [[ -z "${TESTNET}" ]]; then
 

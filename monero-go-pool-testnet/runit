@@ -1,6 +1,6 @@
-docker volume create --name monero-testnet
+docker volume create --name monerod-testnet
 docker volume create --name pool-testnet
 docker volume create --name redis-testnet
 
-docker run --rm -t -i -v monero-testnet:/monero -v pool-testnet:/pool -v redis-testnet:/redis -p 28080:28080 -p 8082:8082 primeroz/monero-go-pool-testnet /sbin/my_init -- bash -l
+docker run --rm -t -i -v monerod-testnet:/monero -v pool-testnet:/pool -v redis-testnet:/redis -p 28080:28080 -p 8082:8082 primeroz/monero-go-pool-testnet /sbin/my_init -- bash -l
 
