@@ -56,8 +56,8 @@ RUN set -ex && strip $SRC_DIR/monero/bin/* $SRC_DIR/monero/lib/* $SRC_DIR/pool/p
 
 RUN set -ex  && apt-get -qq --no-install-recommends install redis-server
 
-RUN echo "/usr/local/src/monero/lib" > /etc/ld.so.conf.d/monero.conf && ldconfig
-RUN echo "/usr/local/src/pool/lib" > /etc/ld.so.conf.d/monero.conf && ldconfig
+RUN echo "/usr/local/src/monero/lib" >> /etc/ld.so.conf.d/monero.conf && ldconfig
+RUN echo "/usr/local/src/pool/lib" >> /etc/ld.so.conf.d/monero.conf && ldconfig
 
 ENV LOG_LEVEL 0
 ENV P2P_BIND_IP 0.0.0.0
