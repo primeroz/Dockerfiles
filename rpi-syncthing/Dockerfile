@@ -2,7 +2,6 @@ FROM hypriot/rpi-alpine-scratch
 #FROM sander85/rpi-alpine
 MAINTAINER Francesco Ciocchetti <fciocchetti@gmail.com>
 
-ENV SYNCTHING_VERSION 0.14.32
 ENV GOSU_VERSION 1.10
 
 RUN apk update \
@@ -16,6 +15,8 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF35
   && gpg --verify /usr/local/bin/gosu.asc \
   && rm /usr/local/bin/gosu.asc \
   && chmod +x /usr/local/bin/gosu
+
+ENV SYNCTHING_VERSION 0.14.32
 
 # get syncthing
 	#&& export version=${SYNCTHING_VERSION} \ 
