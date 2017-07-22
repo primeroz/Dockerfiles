@@ -39,6 +39,7 @@ VOLUME ["/srv/data", "/srv/config"]
 ADD ./start.sh /srv/start.sh
 RUN chmod 770 /srv/start.sh
 
+EXPOSE 22000 8080
 ENV UID=1027
 
 ENTRYPOINT ["/srv/start.sh"]
