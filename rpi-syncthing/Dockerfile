@@ -6,7 +6,7 @@ ENV GOSU_VERSION 1.10
 
 RUN apk update \
   && apk upgrade \
-  && apk add curl ca-certificates openssl gnupg bash usermod
+  && apk add curl ca-certificates openssl gnupg bash shadow
 
 # grab gosu for easy step-down from root
 RUN gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
