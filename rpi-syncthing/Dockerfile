@@ -21,8 +21,11 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF35
 	#&& export version=${SYNCTHING_VERSION} \ 
 WORKDIR /srv
 RUN adduser -H -G users -u 1027 -D syncthing 
-RUN gpg --keyserver pgp.mit.edu --recv-keys D26E6ED000654A3E \
+RUN set -ex && gpg --keyserver pgp.mit.edu --recv-keys D26E6ED000654A3E \
   && curl -L -o syncthing.tar.gz https://github.com/syncthing/syncthing/releases/download/v$SYNCTHING_VERSION/syncthing-linux-arm-v$SYNCTHING_VERSION.tar.gz \
+  && curl -L -o syncthing.tar.gz https://github.com/syncthing/syncthing/releases/download/v$SYNCTHING_VERSION/sha256sum.txt.asc \
+  && grep $(sha256sum syncthing.tar.gz) sha256sum.txt.asc \
+  && gpg --verify sha256sum.txt.asc \
   && tar -xzvf syncthing.tar.gz \
   && rm -f syncthing.tar.gz \
   && mv syncthing-linux-arm-v* syncthing \
