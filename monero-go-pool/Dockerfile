@@ -34,8 +34,10 @@ RUN set -ex && mkdir -p $SRC_DIR/monero $SRC_DIR/monero/bin $SRC_DIR/monero/lib 
 
 ENV GOPATH /usr/local/src/go
 
-RUN set -ex && git clone https://github.com/sammy007/monero-stratum.git
+#RUN set -ex && git clone https://github.com/sammy007/monero-stratum.git
+RUN set -ex && git clone https://github.com/primeroz/monero-stratum.git
 RUN set -ex && cd monero-stratum \
+						&& git checkout redis \
 						&& go get github.com/goji/httpauth \
 						&& go get github.com/yvasiyarov/gorelic \
 						&& go get github.com/gorilla/mux \
