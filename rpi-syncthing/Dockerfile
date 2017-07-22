@@ -4,6 +4,8 @@ MAINTAINER Francesco Ciocchetti <fciocchetti@gmail.com>
 
 ENV GOSU_VERSION 1.10
 
+RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+
 RUN apk update \
   && apk upgrade \
   && apk add curl ca-certificates openssl gnupg bash shadow
