@@ -1,4 +1,5 @@
-FROM hypriot/rpi-alpine-scratch
+#FROM hypriot/rpi-alpine-scratch
+FROM sander85/rpi-alpine
 MAINTAINER Francesco Ciocchetti <fciocchetti@gmail.com>
 
 ENV SYNCTHING_VERSION 0.14.32
