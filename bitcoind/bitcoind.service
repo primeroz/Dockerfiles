@@ -1,0 +1,17 @@
+[Unit]
+Description=Syncthing container
+After=docker.service
+
+[Service]
+Environment=BITCOIN_RPC_PASSWORD=password
+Environment=BITCOIN_RPC_USER=user
+Restart=always
+ExecStartPre=-/usr/bin/docker kill bitcoind
+ExecStartPre=-/usr/bin/docker rm bitcoind
+#ExecStartPre=/usr/bin/docker pull primeroz/syncthing
+ExecStart=/usr/bin/docker run --rm -v bitcoind-data:/data -p 127.0.0.1:8332:8332 -p 8333:8333 --name bitcoind primeroz/bitcoind:0.15.0.1
+ExecStop=/usr/bin/docker stop bitcoind
+
+[Install]
+WantedBy=multi-user.target
+
