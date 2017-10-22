@@ -1,49 +1,47 @@
-# Use phusion/baseimage as base image. To make your builds reproducible, make
-# sure you lock down to a specific version, not to `latest`!
-# See https://github.com/phusion/baseimage-docker/blob/master/Changelog.md for
-# a list of version numbers.
-FROM phusion/baseimage:0.9.22
+FROM debian:stretch-slim
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+RUN groupadd -r monero && useradd -r -m -g monero monero
 
-WORKDIR /tmp
-
-# ...put your own build instructions here...
-RUN set -ex && apt-get update -y
-RUN set -ex && apt-get install -y --no-install-recommends \
-  bzip2 \
-  curl \
-  wget \
-  ca-certificates && \
-  apt-get autoremove -y && \
-  apt-get clean
+RUN set -ex \
+	&& apt-get update \
+	&& apt-get upgrade -y -q \
+	&& apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu gpg wget bzip2 \
+	&& rm -rf /var/lib/apt/lists/*
 
 ENV MONEROD_VERSION v0.11.0.0
+ENV MONEROD_URL https://downloads.getmonero.org/cli/monero-linux-x64-$MONEROD_VERSION.tar.bz2
 ENV MONEROD_SHA256 fa7742c822f3c966aa842bf20a9920803d690d9db02033d9b397cefc7cc07ff4
+ENV MONEROD_ASC_URL https://getmonero.org/downloads/hashes.txt
+ENV MONEROD_PGP_KEY 0x7455c5e3c0cdceb9
 
-RUN mkdir -p /bitmonerod
+# install bitcoin binaries
+RUN set -ex \
+	&& cd /tmp \
+	&& wget -qO monero.tar.bz2 "$MONEROD_URL" \
+	&& echo "$MONEROD_SHA256 monero.tar.bz2" | sha256sum -c - \
+	&& gpg --keyserver sks-keyservers.net --recv-keys "$MONEROD_PGP_KEY" \
+	&& wget -qO monerod.asc "$MONEROD_ASC_URL" \
+	&& gpg --verify monerod.asc \
+	&& tar -xjvf monero.tar.bz2 --strip-components=1 \
+	&& mv monero-$MONEROD_VERSION/* /usr/local/bin \
+	&& rm -rf /tmp/*
 
-RUN set -ex && curl -L -o monero.tar.bz2  https://downloads.getmonero.org/cli/monero-linux-x64-$MONEROD_VERSION.tar.bz2 && \
-	tar -xvjf monero.tar.bz2 && \
-        echo "$MONEROD_SHA256 monero.tar.bz2" | sha256sum -c - && \
-	mv monero-$MONEROD_VERSION/* /bitmonerod && \
-    	rm monero.tar.bz2
-
-RUN mkdir -p /monero
-VOLUME /monero
+# create data directory
+ENV MONERO_DATA /data
+RUN mkdir "$MONERO_DATA" \
+	&& chown -R monero:monero "$MONERO_DATA" \
+	&& chown -h monero:monero "$MONERO_DATA"
 
 ENV RPC_USER=user \
-    RPC_PASSWORD=password
+    RPC_PASSWORD=password \
+    RPC_BIND_ADDRESS=127.0.0.1
 
-RUN mkdir /etc/service/monerod
-COPY monerod.sh /etc/service/monerod/run
-RUN chmod +x /etc/service/monerod/run
+VOLUME /data
+
+COPY docker-entrypoint.sh /entrypoint.sh
+
+RUN chmod a+x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 18080 18081
-
-# Clean up APT when done.
-#RUN set -ex && apt-get purge -y --auto-remove build-essential libtool autotools-dev autoconf libssl-dev libboost-all-dev git  libminiupnpc-dev libdb4.8-dev libdb4.8++-dev \
-        #&& apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN set -ex && apt-get clean && rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp*
-
+CMD ["/usr/local/bin/monerod", "--config-file","$MONERO_DATA/monero.conf"]
