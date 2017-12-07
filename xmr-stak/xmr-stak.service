@@ -1,0 +1,23 @@
+[Unit]
+Description=MoneroHash Miner (XMR-STAK-CPU)
+Requires=docker.service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+Environment=IMAGE_NAME=primeroz/xmr_stak_cpu
+Environment=WALLET_ADDRESS=AAAA_YOUR_ADDRESS_AAAA
+Environment=POOL_ADDRESS=monerohash.com:3333
+Environment=POOL_PASSWORD=x
+
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm %p
+ExecStartPre=/usr/bin/docker pull ${IMAGE_NAME}
+ExecStart=/usr/bin/docker run --name %p --rm -i --cpu-shares=512 -e XMR_STAK_WALLET_ADDRESS=${WALLET_ADDRESS} -e XMR_STAK_POOL_ADDRESS=${POOL_ADDRESS} -e XMR_STAK_POOL_PASSWORD=${POOL_PASSWORD} --cap-add IPC_LOCK $IMAGE_NAME
+
+ExecStop=-/usr/bin/docker stop %p
+ExecStop=-/usr/bin/docker rm %p
+
+
+[Install]
+WantedBy=multi-user.target
