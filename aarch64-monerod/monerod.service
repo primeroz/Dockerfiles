@@ -1,0 +1,19 @@
+[Unit]
+Description=Monerod container
+After=docker.service
+
+[Service]
+StandardInput=tty-force
+Environment=RPC_PASSWORD=password
+Environment=RPC_USER=user
+Environment=RPC_BIND_ADDRESS=0.0.0.0
+Restart=always
+ExecStartPre=-/usr/bin/docker kill monerod
+ExecStartPre=-/usr/bin/docker rm monerod
+#ExecStartPre=/usr/bin/docker pull primeroz/syncthing
+ExecStart=/usr/bin/docker run --rm -i -t -v monerod-data:/data -p 127.0.0.1:18081:18081 -p 18080:18080 --name monerod primeroz/aarch-monerod:0.12.3.0 /usr/local/bin/monerod --config-file /data/monero.conf --confirm-external-bind --rpc-bind-ip 0.0.0.0
+ExecStop=/usr/bin/docker stop monerod
+
+[Install]
+WantedBy=multi-user.target
+
