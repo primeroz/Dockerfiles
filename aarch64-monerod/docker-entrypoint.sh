@@ -8,7 +8,8 @@ if [[ ! -f "$MONERO_DATA/monero.conf" ]]; then
         data-dir=/data
         log-level=1
         rpc-bind-ip=${RPC_BIND_ADDRESS:-127.0.0.1}
-	      rpc-login=${RPC_USER}:${RPC_PASSWORD}
+        rpc-login=${RPC_USER}:${RPC_PASSWORD}
+        block-sync-size=1
 EOF
 	chown monero:monero "$MONERO_DATA/monero.conf"
 fi

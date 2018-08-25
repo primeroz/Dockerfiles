@@ -1,12 +1,12 @@
 FROM arm64v8/alpine
 
-RUN groupadd -r monero && useradd -r -m -g monero monero
 RUN echo "http://nl.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
 RUN set -ex \
     && apk update \
     && apk upgrade \
-	  && apk add --no-cache curl ca-certificates openssl gnupg bash shadow 
+    && apk add --no-cache curl ca-certificates openssl gnupg bash shadow 
 
+RUN groupadd -r monero && useradd -r -m -g monero monero
 
 ENV GOSU_VERSION 1.10
 ENV MONEROD_VERSION v0.12.3.0
@@ -26,10 +26,10 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF35
 # install bitcoin binaries
 RUN set -ex \
 	&& cd /tmp \
-	&& wget -qO monero.tar.bz2 "$MONEROD_URL" \
-	&& echo "$MONEROD_SHA256 monero.tar.bz2" | sha256sum -c - \
+	&& curl -o monero.tar.bz2 "$MONEROD_URL" \
+	&& echo "$MONEROD_SHA256  monero.tar.bz2" | sha256sum -c - \
 	&& gpg --keyserver sks-keyservers.net --recv-keys "$MONEROD_PGP_KEY" \
-	&& wget -qO monerod.asc "$MONEROD_ASC_URL" \
+	&& curl -o monerod.asc "$MONEROD_ASC_URL" \
 	&& gpg --verify monerod.asc \
 	&& tar -xjvf monero.tar.bz2 --strip-components=1 \
 	&& mv monero-$MONEROD_VERSION/* /usr/local/bin \
