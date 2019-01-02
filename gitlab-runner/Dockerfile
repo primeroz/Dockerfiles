@@ -1,4 +1,4 @@
-FROM gitlab/gitlab-runner:ubuntu-v11.3.1
+FROM gitlab/gitlab-runner:ubuntu-v11.6.0
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
@@ -6,4 +6,5 @@ RUN apt-get -y update && \
 		apt-get clean all && \
 		rm -rf /var/lib/apt/lists/*
 
-
+RUN groupadd -g 2000 privoxy
+    #useradd -g privoxy -M -N --shell /usr/sbin/nologin -u 2000 privoxy
