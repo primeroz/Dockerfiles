@@ -17,7 +17,7 @@ RUN gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF35
   && rm /usr/local/bin/gosu.asc \
   && chmod +x /usr/local/bin/gosu
 
-ENV SYNCTHING_VERSION 0.14.32
+ENV SYNCTHING_VERSION 1.1.4
 
 # get syncthing
 	#&& export version=${SYNCTHING_VERSION} \ 
@@ -34,7 +34,7 @@ RUN set -ex && gpg --keyserver pgp.mit.edu --recv-keys D26E6ED000654A3E \
   && rm -rf syncthing/etc \
   && rm -rf syncthing/*.pdf \
   && mkdir -p /srv/config \
-  && mkdir -p /srv/data \
+  && mkdir -p /srv/data 
 
 VOLUME ["/srv/data", "/srv/config"]
 
