@@ -23,13 +23,14 @@ RUN set -ex \
       gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" ; \
     done \
   && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/SHA256SUMS.asc \
-  && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz \
+  && curl -SLO https://bitcoin.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-arm-linux-gnueabihf.tar.gz \
   && gpg --verify SHA256SUMS.asc \
-  && grep " bitcoin-${BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
+  && grep " bitcoin-${BITCOIN_VERSION}-arm-linux-gnueabihf.tar.gz\$" SHA256SUMS.asc | sha256sum -c - \
   && tar -xzf *.tar.gz -C /opt \
   && rm *.tar.gz *.asc
 
 COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
