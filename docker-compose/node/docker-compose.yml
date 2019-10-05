@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+  tor:
+    #image: goldy/tor-hidden-service:v0.4.1.6-3cf37e1
+    build:
+      context: tor    
+    networks: 
+      - node
+    environment:
+      # Set mapping ports
+      HELLO_TOR_SERVICE_HOSTS: 80:hello:9898,9898:hello:9898
+      # Set private key
+      HELLO_TOR_SERVICE_KEY: ${KEY}
+      HELLO_TOR_SERVICE_VERSION: 3
+
+    # Keep keys in volumes
+    volumes:
+      - tor-keys:/var/lib/tor/hidden_service/
+
+    secrets:
+      - source: hello_key
+        target: hello_key
+        mode: 0400
+
+  hello:
+    image: primeroz/podinfo-arm7:latest
+    networks: 
+      - node
+
+networks:
+  node:
+
+volumes:
+  tor-keys:
+    driver: local
+
+secrets:
+  hello_key:
+    file: /tmp/key.b64
