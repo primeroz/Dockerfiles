@@ -1,0 +1,54 @@
+# docker version 3 example
+
+version: "3.1"
+
+services:
+  tor:
+    image: goldy/tor-hidden-service:$CUR_TAG
+    links:
+      - hello
+      - world
+      - again
+    environment:
+        # Set version 3 on BAR group
+        BAR_TOR_SERVICE_HOSTS: '80:hello:80,88:world:80'
+        BAR_TOR_SERVICE_VERSION: '3'
+
+        # hello and again will share the same v2 onion_adress
+        FOO_TOR_SERVICE_HOSTS: '88:again:80,80:hello:80,800:hello:80,8888:hello:80'
+
+
+    # Keep keys in volumes
+    volumes:
+      - tor-keys:/var/lib/tor/hidden_service/
+
+    # Set secret for key, use the same name as the service
+    secrets:
+      - source: foo
+        target: foo
+        mode: 0400
+      - source: bar
+        target: bar
+        mode: 0400
+
+  hello:
+    image: tutum/hello-world
+    hostname: hello
+
+  world:
+    image: tutum/hello-world
+    hostname: world
+
+  again:
+    image: tutum/hello-world
+    hostname: again
+
+volumes:
+    tor-keys:
+        driver: local
+
+secrets:
+    foo:
+        file: ./private_key_foo_v2
+    bar:
+        file: ./private_key_bar_v3
