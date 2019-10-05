@@ -8,10 +8,13 @@ services:
     networks: 
       - node
     environment:
+      # Enable Socks proxy on 9050
+      SOCKS: "true"
+
       # Set mapping ports
       HELLO_TOR_SERVICE_HOSTS: 80:hello:9898,9898:hello:9898
-      # Set private key
-      HELLO_TOR_SERVICE_KEY: ${KEY}
+      # Set private key set from secret
+      #HELLO_TOR_SERVICE_KEY: ${KEY}
       HELLO_TOR_SERVICE_VERSION: 3
 
     # Keep keys in volumes
@@ -20,8 +23,7 @@ services:
 
     secrets:
       - source: hello_key
-        target: hello_key
-        mode: 0400
+        target: hello
 
   hello:
     image: primeroz/podinfo-arm7:latest
@@ -37,4 +39,4 @@ volumes:
 
 secrets:
   hello_key:
-    file: /tmp/key.b64
+    file: /tmp/key
