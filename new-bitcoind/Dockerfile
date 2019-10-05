@@ -2,7 +2,7 @@ FROM debian:stable-slim
 
 LABEL maintainer.0="prz"
 
-RUN useradd -r bitcoin \
+RUN useradd -u 104 -r bitcoin \
   && apt-get update -y \
   && apt-get install -y curl gnupg gosu \
   && apt-get clean \
