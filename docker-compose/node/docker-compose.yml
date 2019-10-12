@@ -15,7 +15,7 @@ services:
       # Set mapping ports
       BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333
       #BTC_TOR_SERVICE_HOSTS: 8333:bitcoind:8333
-      BTC_TOR_SERVICE_VERSION: 3
+      BTC_TOR_SERVICE_VERSION: 2
 
     # Keep keys in volumes
     volumes:
@@ -23,7 +23,7 @@ services:
 
     secrets:
       - source: tor_key
-        target: hello
+        target: tor
 
   bitcoind:
     build:
@@ -53,4 +53,4 @@ volumes:
 
 secrets:
   tor_key:
-    file: /tmp/key
+    file: /tmp/btchs.pem
