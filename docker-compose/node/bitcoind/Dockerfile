@@ -1,3 +1,4 @@
-FROM primeroz/bitcoind:0.18.1-tor
+FROM primeroz/bitcoind:0.18.1
 
-RUN groupadd -g 107 tor && usermod -a -G tor bitcoin
+RUN curl -Lo /wait-for https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
+    && chmod a+x /wait-for

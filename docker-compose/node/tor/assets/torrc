@@ -23,11 +23,4 @@ ORPort 9001
 SocksPort 0.0.0.0:9050
 {% endif %}
 
-{% if 'CONTROL' in env %}
-ControlPort 0.0.0.0:9051
-CookieAuthentication 1
-CookieAuthFileGroupReadable 1
-CookieAuthFile /var/lib/tor/control/cookie
-{% endif %}
-
 # useless line for Jinja bug

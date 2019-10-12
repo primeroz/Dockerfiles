@@ -12,22 +12,17 @@ services:
       # Enable Socks proxy on 9050
       SOCKS: "true"
 
-      # Enable Control Port on 9051
-      CONTROL: "true"
-
       # Set mapping ports
-      HELLO_TOR_SERVICE_HOSTS: 80:hello:9898,9898:hello:9898
-      # Set private key set from secret
-      #HELLO_TOR_SERVICE_KEY: ${KEY}
-      HELLO_TOR_SERVICE_VERSION: 3
+      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333
+      #BTC_TOR_SERVICE_HOSTS: 8333:bitcoind:8333
+      BTC_TOR_SERVICE_VERSION: 3
 
     # Keep keys in volumes
     volumes:
       - tor-keys:/var/lib/tor/hidden_service/
-      - tor-control:/var/lib/tor/control/
 
     secrets:
-      - source: hello_key
+      - source: tor_key
         target: hello
 
   bitcoind:
@@ -40,17 +35,11 @@ services:
     environment:
       BITCOIN_DATA: "/data"
       BITCOIN_WALLET_DISABLE: "true"
-
+    entrypoint: 
+      - /wait-for
+    command: "\"tor:9050\" -- /entrypoint.sh bitcoind"
     volumes:
       - /mnt/bitcoind:/data
-      - tor-control:/var/lib/tor/control/
-
-  hello:
-    image: primeroz/podinfo-arm7:latest
-    depends_on:
-      - tor
-    networks: 
-      - node
 
 networks:
   node:
@@ -61,9 +50,7 @@ networks:
 volumes:
   tor-keys:
     driver: local
-  tor-control:
-    driver: local
 
 secrets:
-  hello_key:
+  tor_key:
     file: /tmp/key

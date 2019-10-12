@@ -2,7 +2,7 @@ FROM debian:stable-slim
 
 LABEL maintainer.0="prz"
 
-RUN useradd -u 104 -r bitcoin \
+RUN useradd -r bitcoin \
   && apt-get update -y \
   && apt-get install -y curl gnupg gosu \
   && apt-get clean \
@@ -31,6 +31,9 @@ RUN set -ex \
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod a+x /entrypoint.sh
+
+COPY wait.sh /wait.sh
+RUN chmod a+x /wait.sh
 
 VOLUME ["/home/bitcoin/.bitcoin"]
 
