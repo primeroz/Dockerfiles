@@ -41,6 +41,42 @@ services:
     volumes:
       - /mnt/bitcoind:/data
 
+  electrs:
+    build:
+      context: electrs
+    depends_on:
+      - tor
+      - bitcoind
+    entrypoint: 
+      - electrs
+    command:
+      - --timestamp
+      - --db-dir
+      - /data
+      - --daemon-dir
+      - /bitcoind-data
+      - --network
+      - bitcoin
+      - --electrum-rpc-addr
+      - 0.0.0.0:50001
+      - --daemon-rpc-addr
+      - bitcoind:8332
+      - --monitoring-addr
+      - 0.0.0.0:4224
+      - --bulk-index-threads
+      - "1"
+      - --index-batch-size
+      - "50"
+      - --server-banner
+      - "Rocco Electrs"
+      - --verbose
+    networks:
+      - node
+    volumes:
+      - /mnt/bitcoind:/bitcoind-data:ro
+      - /mnt/electrs:/data
+  
+
 networks:
   node:
    ipam:
@@ -49,6 +85,8 @@ networks:
 
 volumes:
   tor-keys:
+    driver: local
+  electrs:
     driver: local
 
 secrets:
