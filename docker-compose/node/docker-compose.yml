@@ -13,7 +13,7 @@ services:
       SOCKS: "true"
 
       # Set mapping ports
-      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333
+      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333,50001:electrs:50001
       #BTC_TOR_SERVICE_HOSTS: 8333:bitcoind:8333
       BTC_TOR_SERVICE_VERSION: 2
 
@@ -70,6 +70,11 @@ services:
       - --server-banner
       - "Rocco Electrs"
       - --verbose
+      - --verbose
+      - --verbose
+    ports:
+      - 50001:50001
+      - 4224:4224
     networks:
       - node
     volumes:
