@@ -1,0 +1,99 @@
+version: "3.7"
+
+services:
+  tor:
+    #image: goldy/tor-hidden-service:v0.4.1.6-3cf37e1
+    build:
+      context: tor    
+    networks: 
+        node:
+          ipv4_address: 172.28.7.10
+    environment:
+      # Enable Socks proxy on 9050
+      SOCKS: "true"
+
+      # Set mapping ports
+      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333,50001:electrs:50001
+      #BTC_TOR_SERVICE_HOSTS: 8333:bitcoind:8333
+      BTC_TOR_SERVICE_VERSION: 2
+
+    # Keep keys in volumes
+    volumes:
+      - tor-keys:/var/lib/tor/hidden_service/
+
+    secrets:
+      - source: tor_key
+        target: tor
+
+  bitcoind:
+    build:
+      context: bitcoind
+    depends_on:
+      - tor
+    networks:
+      - node
+    environment:
+      BITCOIN_DATA: "/data"
+      BITCOIN_WALLET_DISABLE: "true"
+    entrypoint: 
+      - /wait-for
+    command: "\"tor:9050\" -- /entrypoint.sh bitcoind"
+    volumes:
+      - /mnt/bitcoind:/data
+
+  electrs:
+    build:
+      context: electrs
+    depends_on:
+      - tor
+      - bitcoind
+    entrypoint: 
+      - electrs
+    command:
+      - --timestamp
+      - --db-dir
+      - /data
+      - --daemon-dir
+      - /bitcoind-data
+      - --network
+      - bitcoin
+      - --electrum-rpc-addr
+      - 0.0.0.0:50001
+      - --daemon-rpc-addr
+      - bitcoind:8332
+      - --monitoring-addr
+      - 0.0.0.0:4224
+      - --bulk-index-threads
+      - "1"
+      - --index-batch-size
+      - "50"
+      - --server-banner
+      - "Rocco Electrs"
+      - --verbose
+      - --verbose
+      - --verbose
+    ports:
+      - 50001:50001
+      - 4224:4224
+    networks:
+      - node
+    volumes:
+      - /mnt/bitcoind:/bitcoind-data:ro
+      - /mnt/electrs:/data
+  
+
+networks:
+  node:
+   ipam:
+     config:
+       - subnet: 172.28.7.0/24
+
+volumes:
+  tor-keys:
+    driver: local
+  electrs:
+    driver: local
+
+secrets:
+  tor_key:
+    file: /tmp/btchs.pem

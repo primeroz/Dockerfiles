@@ -1,0 +1,1 @@
+docker run -d --name=netdata   -p 19999:19999   -v /proc:/host/proc:ro   -v /sys:/host/sys:ro   -v /var/run/docker.sock:/var/run/docker.sock:ro   --cap-add SYS_PTRACE  -e PGID=976 --security-opt apparmor=unconfined   netdata/netdata
