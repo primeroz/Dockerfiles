@@ -1,1 +1,3 @@
 qemu-*
+Dockerfile.*
+!Dockerfile.cross

@@ -1,0 +1,39 @@
+FROM    alpine:3
+ARG     tor_version
+
+ENV     HOME /var/lib/tor
+
+RUN     apk add --no-cache git libevent-dev openssl-dev gcc make automake ca-certificates autoconf musl-dev coreutils zlib-dev && \
+    mkdir -p /usr/local/src/ && \
+    git clone https://git.torproject.org/tor.git /usr/local/src/tor && \
+    cd /usr/local/src/tor && \
+    git checkout tor-$tor_version && \
+    ./autogen.sh && \
+    ./configure \
+    --disable-asciidoc \
+    --sysconfdir=/etc \
+    --disable-unittests && \
+    make && make install && \
+    cd .. && \
+    rm -rf tor && \
+    apk del -f git libevent-dev openssl-dev make automake autoconf musl-dev coreutils && \
+    apk add --no-cache libevent openssl
+
+RUN     mkdir -p /etc/tor/
+
+#COPY    assets/onions /usr/local/src/onions
+#COPY    assets/torrc /var/local/tor/torrc.tpl
+
+
+RUN     mkdir -p ${HOME}/.tor && \
+    addgroup -S -g 107 tor && \
+    adduser -S -G tor -u 104 -H -h ${HOME} tor
+
+#COPY    assets/entrypoint-config.yml /
+
+VOLUME  ["/var/lib/tor/hidden_service/"]
+
+# placeholder
+ENTRYPOINT ["sh"]
+
+CMD     ["tor"]
