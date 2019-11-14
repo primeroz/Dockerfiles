@@ -7,6 +7,7 @@ LABEL maintainer.0="prz"
 RUN useradd -r bitcoin \
   && apt-get update -y \
   && apt-get install -y curl gnupg gosu ca-certificates \
+  && c_rehash \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
