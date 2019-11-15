@@ -1,4 +1,7 @@
-FROM    alpine:3
+FROM __BASEIMAGE_ARCH__/alpine:3
+
+__CROSS_COPY qemu-__QEMU_ARCH__-static /usr/bin/
+
 ARG     tor_version
 
 ENV     HOME /var/lib/tor

@@ -83,10 +83,12 @@ for docker_arch in ${TARGET_ARCHES}; do
   fi
   # Copy QEMU STATIC TO LOCAL DIR
   cp /usr/bin/qemu-${qemu_arch}-static .
+  echo "###################################################################################"
   echo "Building with command: ${docker_bin_path} build ${BUILD_ARGS} -f Dockerfile.${docker_arch} -t ${REPO}/${IMAGE_NAME}:${docker_arch}-${IMAGE_VERSION} ."
   ${docker_bin_path} build ${BUILD_ARGS} -f Dockerfile.${docker_arch} -t ${REPO}/${IMAGE_NAME}:${docker_arch}-${IMAGE_VERSION} .
   #${docker_bin_path} push ${REPO}/${IMAGE_NAME}:${docker_arch}-${IMAGE_VERSION}
   rm -f qemu-${qemu_arch}-static
+  rm -f Dockerfile.${docker_arch}
   arch_images="${arch_images} ${REPO}/${IMAGE_NAME}:${docker_arch}-${IMAGE_VERSION}"
   #rm Dockerfile.${docker_arch}
 done
