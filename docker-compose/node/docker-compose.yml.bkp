@@ -13,23 +13,17 @@ services:
       SOCKS: "true"
 
       # Set mapping ports
-      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333
-      #BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333,50001:electrs:50001,50002:127.0.0.1:50002
+      BTC_TOR_SERVICE_HOSTS: 8332:bitcoind:8332,8333:bitcoind:8333,50001:electrs:50001,50002:electrs-ssl:50002
       #BTC_TOR_SERVICE_HOSTS: 8333:bitcoind:8333
       BTC_TOR_SERVICE_VERSION: 2
-
-      ELECTRS_TOR_SERVICE_HOSTS: 50001:electrs:50001,50002:electrs-ssl:50002
-      ELECTRS_TOR_SERVICE_VERSION: 2
 
     # Keep keys in volumes
     volumes:
       - tor-keys:/var/lib/tor/hidden_service/
 
-    #secrets:
-    #  - source: tor_key
-    #    target: tor
-    #  - source: tor_key
-    #    target: electrs
+    secrets:
+      - source: tor_key
+        target: tor
 
   bitcoind:
     build:
@@ -90,23 +84,9 @@ services:
   electrs-ssl:
     depends_on:
       - electrs
-    image:  haproxy:2.1
+    image: nginx:latest
     volumes:
-      - ./haproxy:/usr/local/etc/haproxy
-    ports:
-      - 50002:50002
-    networks: 
-        node:
-          ipv4_address: 172.28.7.40
-
-    #image: nginx:latest
-    #volumes:
-    #  - ./nginx:/etc/nginx/
-    #ports:
-    #  - 50002:50002
-    #networks: 
-    #    node:
-    #      ipv4_address: 172.28.7.40
+      - ./nginx:/etc/nginx/
 
     #image: test/ssl-proxy:latest
     #command:
